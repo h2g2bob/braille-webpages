@@ -1,79 +1,121 @@
 import logging
-from collections import defaultdict, namedtuple
-from pprint import pprint
-
 import sys
 import os
+import re
+from collections import defaultdict, namedtuple
+from pprint import pprint
 
 # http://liblouis.org/documentation/liblouis.html
 
 # apt-get install liblouis-data
 TABLE_DIR='/usr/share/liblouis/tables/'
 
-Word = namedtuple('Word', 'table pattern abc_word comment')
+Rule = namedtuple('Rule', 'table opcode dot_word abc_word comment')
 
-WORDS = {'always', 'begword', 'word', 'midendword', 'joinword', 'sufword', 'lowword', 'midword', 'endword', 'endnum', 'largesign', 'begnum', 'sign', 'litdigit', 'joinnum', 'midnum', 'uplow', 'prepunc', 'postpunc', 'decpoint', 'multind', 'letter', 'hyphen', 'punctuation'}
 
-FORMATTING = {'begital', 'endital', 'begbold', 'endbold', 'begcaps', 'endcaps', 'capsign', 'numsign', 'letsign', 'begcomp', 'endcomp'}
+WORDS = {
+	'always',
+	'begword',
+	'word',
+	'midendword',
+	'joinword',
+	'sufword',
+	'lowword',
+	'midword',
+	'endword',
+	'endnum',
+	'largesign',
+	'begnum',
+	'sign',
+	'litdigit',
+	'joinnum',
+	'midnum',
+	'uplow',
+	'prepunc',
+	'postpunc',
+	'decpoint',
+	'multind',
+	'letter',
+	'hyphen',
+	'punctuation',
+	'uppercase',
+	'lowercase',
+	'digit',
+	'math',
+	'space',
+	'display',
+	'syllable',
+}
 
-IGNORE = {'literal', 'include', 'repeated', 'contraction'}
+FORMATTING = {
+	'begital',
+	'endital',
+	'begbold',
+	'endbold',
+	'begcaps',
+	'endcaps',
+	'capsign',
+	'numsign',
+	'letsign',
+	'begcomp',
+	'endcomp',
+}
 
-class DotLetter(object):
-	def __init__(self):
-		self.things = {w : defaultdict(list) for w in WORDS | FORMATTING}
-	def __repr__(self):
-		return 'DotLetter(%r)' % (self.__dict__,)
-	def pretty(self):
-		return '\n\n'.join(
-			'%s:\n%s' % (
-				section,
-				'\n'.join(
-					'\t%s =>\n%s' % (
-						dotword,
-						'\n'.join(
-							'\t\t%s: %r' % (
-								word.abc_word,
-								word)
-							for word in words))
-						for dotword, words in dot_word_list.items()))
-				for section, dot_word_list in self.things.items())
+IGNORE = {
+	'literal',
+	'include',
+	'repeated',
+	'contraction',
+	'compbrl',
+	'replace',
+	'pass1',
+	'pass2',
+	'pass3',
+	'pass4',
+	'nocont',
+	'noletsign',
+	'noletsignafter',
+}
 
 def parse_tables(tabledir):
-	dot_letters = defaultdict(DotLetter)
+	rules = []
 
-	for end in os.listdir(tabledir):
-		table = os.path.join(tabledir, end)
-		logging.info('Parsing table %r', table)
-		with open(table) as f:
-			parse_table(dot_letters, f, table)
+	for fileend in os.listdir(tabledir):
+		if fileend.endswith(".dic"):
+			continue
 
-	print dot_letters[sys.argv[1]].pretty()
+		fullfilename = os.path.join(tabledir, fileend)
+		logging.info('Parsing table %r', fullfilename)
+		with open(fullfilename) as f:
+			rules.extend(parse_table(f, fileend))
 
-def parse_table(dot_letters, f, table):
+	return rules
+
+def parse_table(f, table):
 	for line in f:
 		tokens = line.strip().split()
 
 		if not tokens:
 			continue
-		if tokens[0].startswith('#'):
+
+		opcode = tokens[0]
+
+		if opcode.startswith('#'):
 			continue
 
-		if tokens[0] in IGNORE:
+		if opcode in IGNORE:
 			continue
 
-		elif tokens[0] in FORMATTING:
+		elif opcode in FORMATTING:
 			abc_word = tokens[1]
 			if tokens[2:]:
 				comment = 'For example, in %s' % (', '.join(tokens[2:]))
 			else:
 				comment = ''
 			dot_word = ''
+			yield Rule(table, opcode, split_dot_word(dot_word), decode_abc_word(abc_word), comment)
 
-			word = Word(table, dot_word, abc_word, comment)
-			for dot in split_dot_word(dot_word):
-				dot_letters[dot].things[tokens[0]][dot_word].append(word)
-
-		elif tokens[0] in WORDS:
+		elif opcode in WORDS:
 			abc_word = tokens[1]
 			if tokens[2] == '=':
 				pass # use the same dot_word pattern as last time
@@ -83,19 +125,16 @@ def parse_table(dot_letters, f, table):
 				comment = 'For example, in %s' % (', '.join(tokens[3:]))
 			else:
 				comment = ''
+			yield Rule(table, opcode, split_dot_word(dot_word), decode_abc_word(abc_word), comment)
 
-			word = Word(table, dot_word, abc_word, comment)
-			for dot in split_dot_word(dot_word):
-				dot_letters[dot].things[tokens[0]][dot_word].append(word)
 		else:
 			logging.warn('Unknown token %r', tokens)
 
 def split_dot_word(dot_word):
-	return dot_word.split('-')
+	return tuple(dot_word.split('-'))
 
-def main():
-	logging.getLogger().setLevel(logging.INFO)
-	parse_tables(TABLE_DIR)
+def decode_abc_word(abc_word):
+	def replace_abc_word(m):
+		return unichr(int(m.group(1), 16))
+	return re.sub(r'\\x([A-Fa-f0-9]{4})', replace_abc_word, abc_word.decode('utf8', 'replace')) # XXX actually this decoding depends on the file's encoding system (which is described in the filename)
 
-if __name__=='__main__':
-	main()
