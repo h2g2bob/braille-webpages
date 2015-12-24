@@ -41,10 +41,9 @@ def group_by_abc_word(rules_for_dot_word):
 	return by_abc_word
 
 def print_interesting(dot_word, rules_by_dot_word):
-	by_abc_word = group_by_abc_word(rules_by_dot_word)
+	logging.info("Generating %s", dot_word)
 
-	for abc, rules in by_abc_word:
-		print abc, rules
+	by_abc_word = group_by_abc_word(rules_by_dot_word)
 
 	env = Environment(loader=FileSystemLoader('./templates/'))
 	template = env.get_template('dot.html')
