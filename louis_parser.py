@@ -10,7 +10,10 @@ from pprint import pprint
 # apt-get install liblouis-data
 TABLE_DIR='/usr/share/liblouis/tables/'
 
-Rule = namedtuple('Rule', 'table opcode dot_word abc_word comment')
+class Rule(namedtuple('_Rule', 'table opcode dot_word abc_word comment')):
+	@property
+	def locale(self):
+		return self.table.split('.')[0].lower()
 
 
 WORDS = {
@@ -78,6 +81,8 @@ IGNORE = {
 }
 
 def parse_tables(tabledir):
+	"""Main function. Call this to get a list of rules.
+	"""
 	rules = []
 
 	for fileend in os.listdir(tabledir):
@@ -136,5 +141,18 @@ def split_dot_word(dot_word):
 def decode_abc_word(abc_word):
 	def replace_abc_word(m):
 		return unichr(int(m.group(1), 16))
-	return re.sub(r'\\x([A-Fa-f0-9]{4})', replace_abc_word, abc_word.decode('utf8', 'replace')) # XXX actually this decoding depends on the file's encoding system (which is described in the filename)
+	return re.sub(r'\\[xXuU]([A-Fa-f0-9]{4})', replace_abc_word, abc_word.decode('utf8', 'replace')) # XXX actually this decoding depends on the file's encoding system (which is described in the filename)
 
+def adjust_uplow(rules):
+	""" Rules of opcode='uplow' have abc_word of uppercase and lowecase letters together, eg: 'Aa'
+	This splits uplow into 2 rules.
+	"""
+	out = []
+	for rule in rules:
+		if rule.opcode == 'uplow':
+			upper, lower = rule.abc_word
+			out.append(rule._replace(abc_word=upper))
+			out.append(rule._replace(abc_word=lower))
+		else:
+			out.append(rule)
+	return out

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Braille information for {{ dot_word }}</title>
+</head>
+<body>
+
+<h1>Braille information for {{ dot_word }}</h1>
+
+<div class="nav">
+<table class="layout">
+<tr>
+<td>{% if '1' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if '2' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+</tr><tr>
+<td>{% if '3' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if '4' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+</tr><tr>
+<td>{% if '5' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if '6' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+</tr><tr>
+<td>{% if '7' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if '8' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+</tr>
+</table>
+</div>
+
+<ul>
+{% for abc in rules_by_abc %}
+	<li>
+	<em>{{ abc.abc }}</em>
+	({% for rule in abc.rules %}<dfn title="{{ rule.table }}: {{ rule.opcode }}">{{ rule.locale }}</dfn>{% if not loop.last %}, {% endif %}{% endfor %})
+	</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>
