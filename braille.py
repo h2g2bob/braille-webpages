@@ -1,15 +1,15 @@
 class BrailleChar(object):
 	def __init__(self, numbers):
-		assert numbers == '' or numbers.isdigit()
+		assert numbers.isdigit()
 		self.numbers = numbers
 	def is_set(self, n):
 		return str(n) in self.numbers
 	def toggle(self, n):
 		n = str(n)
 		if n in self.numbers:
-			return self.numbers.replace(n, '')
+			return self.numbers.replace(n, '') or '0'
 		else:
-			l = list(self.numbers) + [str(n)]
+			l = list(self.numbers.replace('0', '')) + [str(n)]
 			return ''.join(sorted(l))
 	@property
 	def unicode(self):
