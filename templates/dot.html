@@ -23,9 +23,17 @@ ul.translations > li > div.detail {
 	font-size: 60%;
 }
 
-table.layout td{
+table.layout td {
 	margin: 0;
 	padding: 0;
+}
+
+table.layout tr.hide-8dot {
+	visibility: hidden;
+}
+
+table.layout:hover tr.hide-8dot {
+	visibility: visible;
 }
 
 </style>
@@ -46,14 +54,22 @@ table.layout td{
 </tr><tr>
 <td><a href="{{ dot_word.toggle(3) }}.html">{% if dot_word.is_set(3) %}⚫{% else %}⚪{% endif %}</a></td>
 <td><a href="{{ dot_word.toggle(6) }}.html">{% if dot_word.is_set(6) %}⚫{% else %}⚪{% endif %}</a></td>
-</tr><tr>
+</tr><tr class="extended {% if not dot_word.is_8_dot() %}hide-8dot{% endif %}">
 <td><a href="{{ dot_word.toggle(7) }}.html">{% if dot_word.is_set(7) %}⚫{% else %}⚪{% endif %}</a></td>
 <td><a href="{{ dot_word.toggle(8) }}.html">{% if dot_word.is_set(8) %}⚫{% else %}⚪{% endif %}</a></td>
 </tr>
 </table>
 </div>
 
-<h2>Translations</h2>
+<h2>Basic information</h2>
+
+<table>
+<tr><th>Dot pattern</th><td>{{ dot_word.numbers }}</td></tr>
+<tr><th>Decade</th><td>{{ dot_word.decade }}</td></tr>
+<tr><th>Unicode</th><td><a href="https://codepoints.net/U+{{ dot_word.unicode_number_hex }}">U+{{ dot_word.unicode_number_hex }}</a></td></tr>
+</table>
+
+<h2>Meanings</h2>
 
 <ul class="translations">
 {% for abc in rules_by_abc %}
