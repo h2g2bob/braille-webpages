@@ -38,17 +38,17 @@ table.layout td{
 <div class="nav">
 <table class="layout">
 <tr>
-<td>{% if dot_word.is_set(1) %}⚫{% else %}⚪{% endif %}</td>
-<td>{% if dot_word.is_set(4) %}⚫{% else %}⚪{% endif %}</td>
+<td><a href="{{ dot_word.toggle(1) }}.html">{% if dot_word.is_set(1) %}⚫{% else %}⚪{% endif %}</a></td>
+<td><a href="{{ dot_word.toggle(4) }}.html">{% if dot_word.is_set(4) %}⚫{% else %}⚪{% endif %}</a></td>
 </tr><tr>
-<td>{% if dot_word.is_set(2) %}⚫{% else %}⚪{% endif %}</td>
-<td>{% if dot_word.is_set(5) %}⚫{% else %}⚪{% endif %}</td>
+<td><a href="{{ dot_word.toggle(2) }}.html">{% if dot_word.is_set(2) %}⚫{% else %}⚪{% endif %}</a></td>
+<td><a href="{{ dot_word.toggle(5) }}.html">{% if dot_word.is_set(5) %}⚫{% else %}⚪{% endif %}</a></td>
 </tr><tr>
-<td>{% if dot_word.is_set(3) %}⚫{% else %}⚪{% endif %}</td>
-<td>{% if dot_word.is_set(6) %}⚫{% else %}⚪{% endif %}</td>
+<td><a href="{{ dot_word.toggle(3) }}.html">{% if dot_word.is_set(3) %}⚫{% else %}⚪{% endif %}</a></td>
+<td><a href="{{ dot_word.toggle(6) }}.html">{% if dot_word.is_set(6) %}⚫{% else %}⚪{% endif %}</a></td>
 </tr><tr>
-<td>{% if dot_word.is_set(7) %}⚫{% else %}⚪{% endif %}</td>
-<td>{% if dot_word.is_set(8) %}⚫{% else %}⚪{% endif %}</td>
+<td><a href="{{ dot_word.toggle(7) }}.html">{% if dot_word.is_set(7) %}⚫{% else %}⚪{% endif %}</a></td>
+<td><a href="{{ dot_word.toggle(8) }}.html">{% if dot_word.is_set(8) %}⚫{% else %}⚪{% endif %}</a></td>
 </tr>
 </table>
 </div>
