@@ -14,6 +14,10 @@ class Rule(namedtuple('_Rule', 'table opcode dot_word abc_word comment')):
 	@property
 	def locale(self):
 		return self.table.split('.')[0].lower()
+	@property
+	def split_dot_word(self):
+		return tuple(self.dot_word.split('-'))
+
 
 
 WORDS = {
@@ -118,7 +122,7 @@ def parse_table(f, table):
 			else:
 				comment = ''
 			dot_word = ''
-			yield Rule(table, opcode, split_dot_word(dot_word), decode_abc_word(abc_word), comment)
+			yield Rule(table, opcode, dot_word, decode_abc_word(abc_word), comment)
 
 		elif opcode in WORDS:
 			abc_word = tokens[1]
@@ -130,13 +134,10 @@ def parse_table(f, table):
 				comment = 'For example, in %s' % (', '.join(tokens[3:]))
 			else:
 				comment = ''
-			yield Rule(table, opcode, split_dot_word(dot_word), decode_abc_word(abc_word), comment)
+			yield Rule(table, opcode, dot_word, decode_abc_word(abc_word), comment)
 
 		else:
 			logging.warn('Unknown token %r', tokens)
-
-def split_dot_word(dot_word):
-	return tuple(dot_word.split('-'))
 
 def decode_abc_word(abc_word):
 	def replace_abc_word(m):

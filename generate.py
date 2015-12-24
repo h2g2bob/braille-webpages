@@ -25,7 +25,7 @@ def main():
 def group_by_dot_word(rules):
 	rules_for_dot_word = {}
 	for rule in rules:
-		rules_for_dot_word.setdefault(rule.dot_word, []).append(rule)
+		rules_for_dot_word.setdefault(rule.split_dot_word, []).append(rule)
 	return rules_for_dot_word
 
 def group_by_abc_word(rules_for_dot_word):
@@ -42,6 +42,9 @@ def group_by_abc_word(rules_for_dot_word):
 
 def print_interesting(dot_word, rules_by_dot_word):
 	logging.info("Generating %s", dot_word)
+	if not all(w.isdigit() for w in dot_word):
+		logging.error('Invalid name: %r', dot_word)
+		return
 
 	by_abc_word = group_by_abc_word(rules_by_dot_word)
 
