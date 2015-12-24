@@ -28,12 +28,20 @@ table.layout td {
 	padding: 0;
 }
 
+table.layout td a {
+	text-decoration: none;
+}
+
 table.layout tr.hide-8dot {
 	visibility: hidden;
 }
 
 table.layout:hover tr.hide-8dot {
 	visibility: visible;
+}
+
+.clear {
+	clear: both;
 }
 
 </style>
@@ -81,6 +89,8 @@ table.layout:hover tr.hide-8dot {
 	</li>
 {% endfor %}
 </ul>
+
+<div class="clear"></div>
 
 <h2>About</h2>
 

@@ -20,7 +20,7 @@ class BrailleChar(object):
 
 	@property
 	def unicode_number_hex(self):
-		return "%04x" % (self.unicode_number,)
+		return ("%04x" % (self.unicode_number,)).upper()
 
 	@property
 	def unicode_number(self):
