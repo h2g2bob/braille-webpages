@@ -151,8 +151,12 @@ def adjust_uplow(rules):
 	for rule in rules:
 		if rule.opcode == 'uplow':
 			upper, lower = rule.abc_word
-			out.append(rule._replace(abc_word=upper))
-			out.append(rule._replace(abc_word=lower))
+			if ',' in rule.dot_word:
+				upperdot, lowerdot = rule.dot_word.split(',')
+			else:
+				upperdot = lowerdot = rule.dot_word
+			out.append(rule._replace(abc_word=upper, dot_word=upperdot))
+			out.append(rule._replace(abc_word=lower, dot_word=lowerdot))
 		else:
 			out.append(rule)
 	return out
