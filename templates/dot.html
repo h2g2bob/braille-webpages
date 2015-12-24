@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Braille information for {{ dot_word }}</title>
+	<title>Braille information for {{ dot_word.unicode }}</title>
 
 <meta charset="utf8">
 <style type="text/css">
@@ -33,22 +33,22 @@ table.layout td{
 </head>
 <body>
 
-<h1>Braille information for {{ dot_word }}</h1>
+<h1>Braille information for {{ dot_word.unicode }} ({{ dot_word.numbers }})</h1>
 
 <div class="nav">
 <table class="layout">
 <tr>
-<td>{% if '1' in dot_word %}⚫{% else %}⚪{% endif %}</td>
-<td>{% if '4' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if dot_word.is_set(1) %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if dot_word.is_set(4) %}⚫{% else %}⚪{% endif %}</td>
 </tr><tr>
-<td>{% if '2' in dot_word %}⚫{% else %}⚪{% endif %}</td>
-<td>{% if '5' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if dot_word.is_set(2) %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if dot_word.is_set(5) %}⚫{% else %}⚪{% endif %}</td>
 </tr><tr>
-<td>{% if '3' in dot_word %}⚫{% else %}⚪{% endif %}</td>
-<td>{% if '6' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if dot_word.is_set(3) %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if dot_word.is_set(6) %}⚫{% else %}⚪{% endif %}</td>
 </tr><tr>
-<td>{% if '7' in dot_word %}⚫{% else %}⚪{% endif %}</td>
-<td>{% if '8' in dot_word %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if dot_word.is_set(7) %}⚫{% else %}⚪{% endif %}</td>
+<td>{% if dot_word.is_set(8) %}⚫{% else %}⚪{% endif %}</td>
 </tr>
 </table>
 </div>

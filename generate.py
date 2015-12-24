@@ -5,6 +5,7 @@ from collections import defaultdict, namedtuple
 from jinja2 import Environment, FileSystemLoader
 
 import louis_parser
+import braille
 
 OUT_DIR = './out/'
 
@@ -55,7 +56,7 @@ def print_interesting(dot_word, rules_by_dot_word):
 
 	out_filename = os.path.join(OUT_DIR, '%s.html' % (joined_dot_word,))
 	with open(out_filename, 'w') as f:
-		f.write(template.render(dot_word=joined_dot_word, rules_by_abc=by_abc_word).encode('utf8'))
+		f.write(template.render(dot_word=braille.BrailleChar(joined_dot_word), rules_by_abc=by_abc_word).encode('utf8'))
 
 if __name__=='__main__':
 	main()
